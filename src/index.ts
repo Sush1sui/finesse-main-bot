@@ -14,6 +14,9 @@ import "./bot";
 // import githubWebhookRoutes from "./routes/githubWebhook.route";
 import { pingBot } from "./utils/helpers";
 
+// Uncomment the following line to generate top 1k mudae characters JSON from a text file
+// import "./utils/generateCharacterJson";
+
 const PORT = process.env.PORT || 3000;
 
 const app = express();

@@ -31,7 +31,7 @@ loadEvents(client);
 
 client.once("ready", () => {
   client.user?.setPresence({
-    status: "online",
+    status: "idle",
     activities: [
       {
         name: "Do it with Finesse!",
