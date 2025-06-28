@@ -19,7 +19,7 @@ export default {
       const embed = message.embeds[0];
       if (!embed) return; // Exit if there's no embed
 
-      const isClaimed = embed.footer?.text.includes("belongs to");
+      const isClaimed = embed.footer?.text.toLowerCase().includes("belongs to");
       const characterName = embed.author?.name;
 
       // If the character is not claimed and has a name, perform a quick check
