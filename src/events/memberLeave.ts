@@ -1,9 +1,8 @@
-import { GuildMember, Message, TextChannel } from "discord.js";
+import { Collection, GuildMember, Message, TextChannel } from "discord.js";
 import { welcomeChannelId } from "../utils/helpers";
 
-
 export default {
-  name: 'guildMemberRemove',
+  name: "guildMemberRemove",
   async execute(member: GuildMember) {
     if (member.user.bot) return;
 
@@ -16,12 +15,12 @@ export default {
 
       let lastId;
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
-        const messages = await welcomeChannel.messages.fetch({
-          limit: 100,
-          before: lastId,
-        });
+        const messages: Collection<string, Message> =
+          await welcomeChannel.messages.fetch({
+            limit: 100,
+            before: lastId,
+          });
 
         const messageToDelete = messages.find(
           (m: Message) =>
