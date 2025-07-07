@@ -6,6 +6,8 @@ export default {
   async execute(oldMember: GuildMember, newMember: GuildMember): Promise<void> {
     if (newMember.user.bot) return;
 
+    if (newMember.user.id === "1258348384671109120") return;
+
     try {
       // Check if the community role was added
       const oldRoles = oldMember.roles.cache;
