@@ -132,10 +132,11 @@ export async function exemptUserVanity(userId: string) {
   try {
     const expirationDate = new Date();
     expirationDate.setSeconds(expirationDate.getSeconds() + 3 * 24 * 60 * 60); // Add 3 days
-    const exemptedUser = await ExempterUsersModel.create({
-      userId,
-      expiration: expirationDate,
-    });
+    const exemptedUser = await ExempterUsersModel.findOneAndUpdate(
+      { userId },
+      { userId, expiration: expirationDate },
+      { upsert: true, new: true }
+    );
 
     return exemptedUser;
   } catch (error) {
