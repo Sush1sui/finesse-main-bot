@@ -56,6 +56,7 @@ export const startBot = async () => {
     isBotOnline = false;
   }
 };
+startBot();
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (error) => {

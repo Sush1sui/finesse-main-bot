@@ -30,7 +30,6 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("Bot is running");
 });
 
-pingBot(); // Initial ping to check bot status
 setInterval(pingBot, 600000); // Ping every 10 minutes
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
