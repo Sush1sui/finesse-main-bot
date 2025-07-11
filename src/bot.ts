@@ -46,15 +46,17 @@ client.once("ready", () => {
   });
 });
 
-export const startBot = async () => {
-  try {
-    await client.login(bot_token);
-    isBotOnline = true;
-    console.log("Bot is online");
-  } catch (error) {
-    console.error("Failed to start the bot:", error);
-    isBotOnline = false;
-  }
+export const startBot = () => {
+  client
+    .login(bot_token)
+    .then(() => {
+      isBotOnline = true;
+      console.log("Bot is online");
+    })
+    .catch((error) => {
+      isBotOnline = false;
+      console.error("Failed to start the bot:", error);
+    });
 };
 
 setTimeout(() => {
