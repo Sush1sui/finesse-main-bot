@@ -41,9 +41,14 @@ client.once("ready", () => {
   });
 });
 
-client.login(process.env.BOT_TOKEN).catch((error) => {
-  console.error("Failed to login to Discord:", error);
-});
+client
+  .login(process.env.BOT_TOKEN)
+  .then(() => {
+    console.log("Logged in to Discord!");
+  })
+  .catch((error) => {
+    console.error("Failed to login to Discord:", error);
+  });
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (error) => {
