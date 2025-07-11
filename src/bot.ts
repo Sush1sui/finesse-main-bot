@@ -11,15 +11,10 @@ export interface CustomClient extends Client {
   commands: Collection<string, any>;
 }
 
+export let isBotOnline = false;
+
 const bot_token = process.env.BOT_TOKEN;
-if (bot_token || bot_token !== undefined) {
-  console.log("Bot token is set.");
-} else {
-  console.error(
-    "Bot token is not set. Please check your environment variables."
-  );
-  process.exit(1);
-}
+if (!bot_token) throw new Error("Missing environment variables");
 
 export const client = new Client({
   intents: [
@@ -51,14 +46,18 @@ client.once("ready", () => {
   });
 });
 
-client
-  .login(bot_token)
-  .then(() => {
-    console.log("Logged in to Discord!");
-  })
-  .catch((error) => {
-    console.error("Failed to login to Discord:", error);
-  });
+export const startBot = async () => {
+  try {
+    await client.login(bot_token);
+    isBotOnline = true;
+    console.log("Bot is online");
+  } catch (error) {
+    console.error("Failed to start the bot:", error);
+    isBotOnline = false;
+  }
+};
+
+startBot();
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (error) => {
