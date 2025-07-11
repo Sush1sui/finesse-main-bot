@@ -57,8 +57,6 @@ export const startBot = async () => {
   }
 };
 
-startBot();
-
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (error) => {
   console.error("Unhandled promise rejection:", error);
