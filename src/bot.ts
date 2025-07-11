@@ -11,6 +11,16 @@ export interface CustomClient extends Client {
   commands: Collection<string, any>;
 }
 
+const bot_token = process.env.BOT_TOKEN;
+if (bot_token || bot_token !== undefined) {
+  console.log("Bot token is set.");
+} else {
+  console.error(
+    "Bot token is not set. Please check your environment variables."
+  );
+  process.exit(1);
+}
+
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -42,7 +52,7 @@ client.once("ready", () => {
 });
 
 client
-  .login(process.env.BOT_TOKEN)
+  .login(bot_token)
   .then(() => {
     console.log("Logged in to Discord!");
   })
