@@ -6,7 +6,7 @@ import path from "path";
 import crypto from "crypto";
 import { JSDOM } from "jsdom";
 import { Request, Response } from "express";
-import { isBotOnline, startBot } from "../bot";
+import { client, startBot } from "../bot";
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -78,7 +78,7 @@ export const pingBot = () => {
       .then((res) => res.text())
       .then((text) => {
         console.log(`Ping successful: ${text}`);
-        if (!isBotOnline) startBot();
+        if (!client.isReady()) startBot();
       })
       .catch((err) => {
         clearTimeout(timeoutId);

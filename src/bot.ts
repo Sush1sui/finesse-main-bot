@@ -11,8 +11,6 @@ export interface CustomClient extends Client {
   commands: Collection<string, any>;
 }
 
-export let isBotOnline = false;
-
 const bot_token = process.env.BOT_TOKEN;
 if (!bot_token) throw new Error("Missing environment variables");
 
@@ -47,20 +45,19 @@ client.once("ready", () => {
 });
 
 export const startBot = () => {
+  console.log("Starting bot...");
   client
     .login(bot_token)
     .then(() => {
-      isBotOnline = true;
       console.log("Bot is online");
     })
     .catch((error) => {
-      isBotOnline = false;
       console.error("Failed to start the bot:", error);
     });
 };
 
 setTimeout(() => {
-  if (!isBotOnline) {
+  if (!client.isReady()) {
     console.error("Bot failed to start within 30 seconds, retrying...");
     startBot();
   }
