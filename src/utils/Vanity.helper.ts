@@ -34,7 +34,7 @@ export async function checkSupporterStatus(guild: Guild) {
     console.log("scanning for vanity links");
 
     // Fetch all members in the guild
-    const members = await guild.members.fetch();
+    const members = guild.members.cache;
     const exemptedUsers = await getAllExemptedUsersVanity();
     let exemptedUserIds: string[] = [];
     if (exemptedUsers) {
@@ -51,6 +51,10 @@ export async function checkSupporterStatus(guild: Guild) {
 
     const colorIndex = 0;
     let currentColor = rainbowTransition[0];
+
+    const supporterChannel = guild.channels.cache.get(
+      supporterChannelId
+    ) as TextChannel;
 
     for (const member of members.values()) {
       // Skip bots
@@ -78,12 +82,10 @@ export async function checkSupporterStatus(guild: Guild) {
       // Add or remove the role based on the link
       if (includesSupporterLink && !hasSupporterRole) {
         await member.roles.add(supporterRoleId);
-        console.log(`Added supporter role to ${member.user.tag}`);
+        // console.log(`Added supporter role to ${member.user.tag}`);
 
         // Send the formatted message to the supporter channel
-        const supporterChannel = (await guild.channels.fetch(
-          supporterChannelId
-        )) as TextChannel;
+
         if (supporterChannel) {
           const embed = new EmbedBuilder();
 
@@ -118,7 +120,7 @@ export async function checkSupporterStatus(guild: Guild) {
       } else if (!includesSupporterLink && hasSupporterRole) {
         await member.roles.remove(supporterRoleId);
         await member.roles.remove("1312957178356699146"); // remove bio role if it exists
-        console.log(`Removed supporter role from ${member.user.tag}`);
+        // console.log(`Removed supporter role from ${member.user.tag}`);
       }
     }
   } catch (error) {
