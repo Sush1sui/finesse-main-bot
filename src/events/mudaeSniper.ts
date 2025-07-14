@@ -24,22 +24,26 @@ export default {
 
       // If the character is not claimed and has a name, perform a quick check
       if (!isClaimed && characterName) {
-        if (characterSet.has(characterName.toLowerCase())) {
-          console.log(`Found character: ${characterName}`);
+        const lowerName = characterName.toLowerCase();
+        if (!characterSet.has(lowerName)) return;
 
-          for (const userId of VIP_USERS_ID) {
+        // Logging can be removed or minimized in production
+        // console.log(`Found character: ${characterName}`);
+
+        await Promise.all(
+          VIP_USERS_ID.map(async (userId) => {
             try {
               const user = await message.client.users.fetch(userId);
               await user.send({
                 content: `# A top character \`${characterName}\` has appeared! Click here to jump to the message: ${message.url}`,
                 embeds: [embed],
               });
-              console.log(`Successfully sent DM to user ${userId}`);
+              // console.log(`Successfully sent DM to user ${userId}`);
             } catch (dmError) {
-              console.error(`Failed to send DM to user ${userId}:`, dmError);
+              // console.error(`Failed to send DM to user ${userId}:`, dmError);
             }
-          }
-        }
+          })
+        );
       }
     } catch (error) {
       console.error(`Failed to snipe: ${(error as Error).message}`);

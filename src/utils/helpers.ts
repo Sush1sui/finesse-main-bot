@@ -68,26 +68,34 @@ export const kakClaimTimeoutMap = new Map<string, NodeJS.Timeout>();
 export const kakClaimIntervalMap = new Map<string, NodeJS.Timeout>();
 
 const SERVER_LINK = process.env.SERVER_LINK;
-let timeoutId: NodeJS.Timeout;
 
-export const pingBot = () => {
+export const pingBot = async (maxRetries = 5, retryDelay = 5000) => {
   if (!SERVER_LINK) return;
 
-  const attemptPing = () => {
-    fetch(SERVER_LINK)
-      .then((res) => res.text())
-      .then((text) => {
-        console.log(`Ping successful: ${text}`);
-        if (!client.isReady()) startBot();
-      })
-      .catch((err) => {
-        clearTimeout(timeoutId);
-        console.log(`Ping failed, retrying: ${err}`);
-        timeoutId = setTimeout(attemptPing, 5000);
-      });
-  };
+  let attempts = 0;
+  let success = false;
 
-  attemptPing();
+  while (attempts < maxRetries && !success) {
+    try {
+      const res = await fetch(SERVER_LINK);
+      const text = await res.text();
+      console.log(`Ping successful: ${text}`);
+      if (!client.isReady()) startBot();
+      success = true;
+    } catch (err) {
+      attempts++;
+      console.log(
+        `Ping failed (attempt ${attempts}), retrying in ${
+          retryDelay / 1000
+        }s: ${err}`
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+  }
+
+  if (!success) {
+    console.log("PingBot: Max retries reached, giving up.");
+  }
 };
 
 export async function downloadFile(url: string, destination: string) {

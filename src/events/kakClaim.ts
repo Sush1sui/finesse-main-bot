@@ -29,16 +29,17 @@ export default {
         `**<@${userId}> can kak/trash claim in ${remainingTime} seconds!**`
       );
 
+      // Only update the message every 5 seconds, and at the last second
       const intervalId = setInterval(async () => {
         remainingTime--;
-        if (remainingTime >= 0) {
-          try {
-            await replyMessage.edit(
+        if (remainingTime % 5 === 0 || remainingTime === 0) {
+          await replyMessage
+            .edit(
               `**<@${userId}> can kak/trash claim in ${remainingTime} seconds!**`
-            );
-          } catch (error) {
-            console.log("Error updating countdown message: ", error);
-          }
+            )
+            .catch((error) => {
+              console.log("Error updating countdown message: ", error);
+            });
         }
       }, 1000);
 

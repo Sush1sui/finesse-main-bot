@@ -1,10 +1,16 @@
 import { Collection, GuildMember, Message, TextChannel } from "discord.js";
 import { welcomeChannelId } from "../utils/helpers";
 
+const maxFetches = 10; // Maximum number of fetch attempts to avoid infinite loops
+
 export default {
   name: "guildMemberRemove",
   async execute(member: GuildMember) {
     if (member.user.bot) return;
+
+    let lastId;
+    const botId = member.client.user?.id;
+    let fetchCount = 0;
 
     try {
       const welcomeChannel = member.guild.channels.cache.get(
@@ -13,9 +19,7 @@ export default {
 
       if (!welcomeChannel) throw new Error("Welcome channel not found");
 
-      let lastId;
-
-      while (true) {
+      while (fetchCount < maxFetches) {
         const messages: Collection<string, Message> =
           await welcomeChannel.messages.fetch({
             limit: 100,
@@ -23,8 +27,8 @@ export default {
           });
 
         const messageToDelete = messages.find(
-          (m: Message) =>
-            m.author.id === member.client.user?.id &&
+          (m) =>
+            m.author.id === botId &&
             m.embeds[0]?.description?.includes(`<@${member.id}>`)
         );
 
@@ -33,11 +37,9 @@ export default {
           break;
         }
 
-        if (messages.size === 0) {
-          break;
-        }
-
-        lastId = messages.last()!.id;
+        if (messages.size === 0) break;
+        lastId = messages.last()?.id;
+        fetchCount++;
       }
     } catch (error) {
       console.error("Error sending leave message:", error);
